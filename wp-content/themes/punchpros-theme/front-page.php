@@ -208,16 +208,6 @@ $testimonials = [
     </div>
 </section>
 
-<?php // ── New Arrivals ── ?>
-<?php if ( class_exists( 'WooCommerce' ) ) : ?>
-<section class="py-16 sm:py-24 bg-white">
-    <div class="container-pp">
-        <h2 class="section-heading">NIEUW BINNEN</h2>
-        <?php echo do_shortcode( '[recent_products limit="4" columns="4" orderby="date"]' ); ?>
-    </div>
-</section>
-<?php endif; ?>
-
 <?php // ── Testimonial Carousel Script ── ?>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
