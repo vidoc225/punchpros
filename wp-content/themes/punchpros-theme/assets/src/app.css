@@ -1,0 +1,151 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@source "../../**/*.php";
+@source "../../**/*.html";
+
+@theme {
+    --color-brand-primary:  #1a1a2e;
+    --color-brand-accent:   #e94560;
+    --color-brand-dark:     #16213e;
+    --color-brand-light:    #f5f5f5;
+
+    --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+    --font-display: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* === Base layer === */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply font-sans text-gray-800 bg-white antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-display font-bold text-brand-primary;
+    }
+
+    a {
+        @apply text-brand-accent hover:underline;
+    }
+
+    img {
+        @apply max-w-full h-auto block;
+    }
+}
+
+/* === Components === */
+@layer components {
+    .container-pp {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .btn {
+        @apply inline-flex items-center justify-center px-5 py-2.5 rounded-md font-semibold text-sm
+               bg-brand-accent text-white border border-transparent
+               hover:bg-rose-700 hover:no-underline hover:-translate-y-px
+               transition-all duration-150 cursor-pointer;
+    }
+
+    .btn-outline {
+        @apply inline-flex items-center justify-center px-5 py-2.5 rounded-md font-semibold text-sm
+               bg-transparent text-brand-primary border border-brand-primary
+               hover:bg-brand-primary hover:text-white hover:no-underline
+               transition-all duration-150 cursor-pointer;
+    }
+
+    .entry-content {
+        @apply prose prose-slate max-w-none;
+    }
+
+    .entry-content h2 {
+        @apply text-2xl mt-8 mb-3;
+    }
+
+    .entry-content h3 {
+        @apply text-xl mt-6 mb-2;
+    }
+
+    .entry-content p {
+        @apply mb-4 leading-relaxed;
+    }
+
+    .entry-content ul,
+    .entry-content ol {
+        @apply mb-4 pl-6;
+    }
+
+    .entry-content ul { @apply list-disc; }
+    .entry-content ol { @apply list-decimal; }
+}
+
+/* === WooCommerce overrides === */
+@layer components {
+    .woocommerce ul.products {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 list-none p-0 m-0;
+    }
+
+    .woocommerce ul.products li.product {
+        @apply bg-white border border-gray-200 rounded-lg p-4 transition-shadow hover:shadow-lg;
+        width: 100% !important;
+        margin: 0 !important;
+        float: none !important;
+    }
+
+    .woocommerce ul.products li.product a img {
+        @apply rounded-md mb-3;
+    }
+
+    .woocommerce ul.products li.product .woocommerce-loop-product__title {
+        @apply text-base font-semibold text-brand-primary mb-1;
+    }
+
+    .woocommerce ul.products li.product .price {
+        @apply text-brand-accent font-bold text-lg;
+    }
+
+    .woocommerce ul.products li.product .button,
+    .woocommerce a.button,
+    .woocommerce button.button,
+    .woocommerce input.button,
+    .woocommerce #respond input#submit,
+    .woocommerce .single_add_to_cart_button {
+        @apply inline-flex items-center justify-center px-5 py-2.5 rounded-md font-semibold text-sm
+               bg-brand-accent text-white border border-transparent
+               hover:bg-rose-700 hover:no-underline
+               transition-all duration-150;
+    }
+
+    .woocommerce .woocommerce-message,
+    .woocommerce .woocommerce-info {
+        @apply bg-brand-light border-l-4 border-brand-accent text-brand-primary p-4 rounded;
+    }
+
+    .woocommerce-cart-form .button,
+    .woocommerce-cart .wc-proceed-to-checkout .checkout-button {
+        @apply w-full sm:w-auto;
+    }
+
+    .woocommerce form .form-row input.input-text,
+    .woocommerce form .form-row textarea,
+    .woocommerce form .form-row select {
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:border-brand-accent focus:outline-none;
+    }
+
+    .woocommerce nav.woocommerce-pagination ul li a,
+    .woocommerce nav.woocommerce-pagination ul li span {
+        @apply px-3 py-2 rounded-md bg-gray-100 text-gray-800;
+    }
+
+    .woocommerce nav.woocommerce-pagination ul li span.current {
+        @apply bg-brand-accent text-white;
+    }
+}
+
+/* === Utilities === */
+@layer utilities {
+    .text-balance { text-wrap: balance; }
+}
