@@ -82,17 +82,11 @@ add_action( 'woocommerce_before_main_content', 'punchpros_wc_wrapper_start', 10 
 add_action( 'woocommerce_after_main_content', 'punchpros_wc_wrapper_end', 10 );
 
 function punchpros_wc_wrapper_start() {
-    echo '<div class="container-pp py-10"><div class="flex flex-col lg:flex-row gap-8"><main id="main" class="flex-1 min-w-0">';
+    echo '<div class="container-pp py-10"><main id="main">';
 }
 
 function punchpros_wc_wrapper_end() {
-    echo '</main>';
-    if ( is_active_sidebar( 'sidebar-main' ) ) {
-        echo '<aside class="w-full lg:w-80 flex-shrink-0">';
-        dynamic_sidebar( 'sidebar-main' );
-        echo '</aside>';
-    }
-    echo '</div></div>';
+    echo '</main></div>';
 }
 
 /**

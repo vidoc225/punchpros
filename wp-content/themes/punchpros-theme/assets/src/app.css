@@ -102,6 +102,7 @@
         width: 100% !important;
         margin: 0 !important;
         float: none !important;
+        clear: none !important;
     }
 
     .woocommerce ul.products li.product a img {
@@ -151,6 +152,128 @@
     .woocommerce nav.woocommerce-pagination ul li span.current {
         @apply bg-primary text-black;
     }
+}
+
+/* === WooCommerce Cart === */
+@layer components {
+    .woocommerce-cart .woocommerce {
+        @apply max-w-5xl mx-auto;
+        font-family: var(--font-body);
+    }
+
+    .woocommerce-cart table.shop_table {
+        @apply w-full border-collapse;
+        border: none;
+    }
+
+    .woocommerce-cart table.shop_table th {
+        @apply text-xs font-bold tracking-wider uppercase text-gray-400 pb-4 border-b border-gray-200;
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+    }
+
+    .woocommerce-cart table.shop_table td {
+        @apply py-6 border-b border-gray-100 align-middle;
+    }
+
+    .woocommerce-cart table.shop_table .product-thumbnail img {
+        @apply w-20 h-20 object-contain rounded bg-gray-50 p-1;
+    }
+
+    .woocommerce-cart table.shop_table .product-name a {
+        @apply text-sm font-bold text-black no-underline hover:text-primary;
+        font-family: var(--font-body);
+        text-transform: none;
+    }
+
+    .woocommerce-cart table.shop_table .product-price,
+    .woocommerce-cart table.shop_table .product-subtotal {
+        @apply text-sm font-bold text-black;
+    }
+
+    .woocommerce-cart table.shop_table .product-quantity .quantity input.qty {
+        @apply w-14 h-9 text-center border border-gray-300 rounded text-sm font-bold;
+        -moz-appearance: textfield;
+    }
+
+    .woocommerce-cart table.shop_table .product-remove a.remove {
+        @apply text-gray-400 hover:text-red-500 transition-colors text-xl no-underline;
+    }
+
+    .woocommerce-cart table.shop_table td.actions {
+        @apply pt-6 border-b-0;
+    }
+
+    .woocommerce-cart table.shop_table td.actions .coupon input {
+        @apply px-4 py-2.5 border border-gray-300 text-sm mr-2 focus:border-primary focus:outline-none;
+    }
+
+    .woocommerce-cart .cart_totals {
+        @apply mt-10 bg-gray-50 rounded-2xl p-8;
+    }
+
+    .woocommerce-cart .cart_totals h2 {
+        @apply text-lg mb-6;
+        font-family: var(--font-heading);
+    }
+
+    .woocommerce-cart .cart_totals table {
+        @apply w-full;
+        border: none;
+    }
+
+    .woocommerce-cart .cart_totals table th {
+        @apply text-sm font-bold text-gray-600 py-3 text-left align-top;
+        font-family: var(--font-body);
+        text-transform: none;
+    }
+
+    .woocommerce-cart .cart_totals table td {
+        @apply text-sm font-bold text-black py-3 text-right;
+    }
+
+    .woocommerce-cart .cart_totals .order-total th,
+    .woocommerce-cart .cart_totals .order-total td {
+        @apply text-lg pt-4 border-t border-gray-200;
+    }
+
+    .woocommerce-cart .cart_totals .wc-proceed-to-checkout a.checkout-button {
+        @apply block w-full text-center bg-primary text-black font-bold py-4 text-sm tracking-wider
+               hover:bg-primary-dark hover:no-underline transition-colors mt-6;
+        font-family: var(--font-heading);
+    }
+
+    .woocommerce-cart .woocommerce-cart-form__contents .button,
+    .woocommerce-cart .coupon .button {
+        @apply bg-black text-white text-xs font-bold py-2.5 px-6 tracking-wider
+               hover:bg-gray-800 hover:no-underline transition-colors;
+    }
+
+    .woocommerce-cart .cart-empty {
+        @apply text-center py-20 text-gray-400;
+        font-family: var(--font-body);
+        text-transform: none;
+    }
+
+    .woocommerce-cart .return-to-shop a {
+        @apply inline-flex items-center justify-center px-8 py-3 font-bold text-sm
+               bg-primary text-black border border-transparent tracking-wider
+               hover:bg-primary-dark hover:no-underline transition-all duration-150;
+    }
+}
+
+/* === WooCommerce specificity overrides (outside @layer for higher priority) === */
+.woocommerce ul.products::before,
+.woocommerce ul.products::after {
+    content: none !important;
+    display: none !important;
+}
+
+.woocommerce ul.products li.product {
+    width: 100% !important;
+    margin: 0 !important;
+    float: none !important;
+    clear: none !important;
 }
 
 /* === Animations === */
