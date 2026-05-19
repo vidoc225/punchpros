@@ -109,11 +109,11 @@ $img = static function ( string $path ) : string {
 <?php // ── CTA ── ?>
 <section class="bg-white px-6 py-24 sm:py-32 text-center">
     <p class="text-4xl sm:text-5xl mb-4 text-dark" style="font-family:var(--font-heading)">
-        WE ZIJN NOG MAAR NET BEGONNEN.
+        INTERESSE IN B2B?
     </p>
-    <p class="text-gray-500 text-lg mb-10">Benieuwd om het zelf te proberen?</p>
+    <p class="text-gray-500 text-lg mb-10 max-w-xl mx-auto">Wij leveren ook aan sportscholen, boksclubs en retailers. Neem contact op voor exclusieve samenwerkingen en groothandelprijzen.</p>
     <a href="mailto:info@punchpros.nl" class="btn inline-block text-sm tracking-widest">
-        STUUR EEN BERICHT &rarr;
+        NEEM CONTACT OP &rarr;
     </a>
 </section>
 

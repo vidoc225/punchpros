@@ -98,11 +98,15 @@
     }
 
     .woocommerce ul.products li.product {
-        @apply bg-white border border-gray-100 rounded-[32px] overflow-hidden p-4 transition-shadow hover:shadow-md;
+        @apply bg-white border border-gray-100 rounded-[32px] overflow-hidden p-4 transition-shadow hover:shadow-md flex flex-col;
         width: 100% !important;
         margin: 0 !important;
         float: none !important;
         clear: none !important;
+    }
+
+    .woocommerce ul.products li.product .button {
+        margin-top: auto !important;
     }
 
     .woocommerce ul.products li.product a img {
@@ -110,13 +114,13 @@
     }
 
     .woocommerce ul.products li.product .woocommerce-loop-product__title {
-        @apply text-sm font-bold text-center mt-1 leading-tight;
+        @apply text-sm font-bold text-center mt-1 leading-tight text-black;
         font-family: var(--font-body);
         text-transform: none;
     }
 
     .woocommerce ul.products li.product .price {
-        @apply text-center font-bold mt-1;
+        @apply text-center font-bold mt-1 text-base text-black;
         font-family: var(--font-body);
     }
 
@@ -127,9 +131,19 @@
     .woocommerce #respond input#submit,
     .woocommerce .single_add_to_cart_button {
         @apply inline-flex items-center justify-center px-6 py-2.5 font-bold text-sm
-               bg-primary text-black border border-transparent tracking-wider
-               hover:bg-primary-dark hover:no-underline
+               text-white border border-transparent tracking-wider
+               hover:no-underline
                transition-all duration-150;
+        background-color: #16a34a;
+    }
+
+    .woocommerce ul.products li.product .button:hover,
+    .woocommerce a.button:hover,
+    .woocommerce button.button:hover,
+    .woocommerce input.button:hover,
+    .woocommerce #respond input#submit:hover,
+    .woocommerce .single_add_to_cart_button:hover {
+        background-color: #15803d;
     }
 
     .woocommerce .woocommerce-message,
@@ -274,6 +288,100 @@
     margin: 0 !important;
     float: none !important;
     clear: none !important;
+}
+
+/* === WooCommerce variation select === */
+.woocommerce div.product .variations select {
+    border: 2px solid #e5e7eb !important;
+    border-radius: 6px !important;
+    padding: 10px 40px 10px 14px !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: #111 !important;
+    background-color: #fff !important;
+    width: 100% !important;
+    cursor: pointer !important;
+    transition: border-color 0.15s ease !important;
+    font-family: var(--font-body) !important;
+}
+
+.woocommerce div.product .variations select:focus {
+    border-color: #16a34a !important;
+    outline: none !important;
+}
+
+.woocommerce div.product .variations td.label label {
+    font-weight: 700 !important;
+    font-size: 0.875rem !important;
+    color: #111 !important;
+}
+
+/* === WooCommerce single product title === */
+.woocommerce div.product .product_title {
+    font-size: 1.75rem !important;
+    font-weight: 900 !important;
+    color: #000 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* === WooCommerce product price === */
+.woocommerce ul.products li.product .price {
+    color: #000 !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+}
+
+/* === WooCommerce product title color === */
+.woocommerce ul.products li.product a {
+    color: #000 !important;
+    text-decoration: none !important;
+}
+
+.woocommerce ul.products li.product a:hover {
+    color: #000 !important;
+}
+
+/* === WooCommerce green buttons === */
+.woocommerce ul.products li.product .button,
+.woocommerce a.button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #respond input#submit,
+.woocommerce .single_add_to_cart_button {
+    background-color: #16a34a !important;
+    color: #fff !important;
+}
+
+.woocommerce ul.products li.product .button:hover,
+.woocommerce a.button:hover,
+.woocommerce button.button:hover,
+.woocommerce input.button:hover,
+.woocommerce #respond input#submit:hover,
+.woocommerce .single_add_to_cart_button:hover {
+    background-color: #15803d !important;
+}
+
+/* === WooCommerce Checkout: Place Order button === */
+.wc-block-components-checkout-place-order-button,
+.wc-block-cart__submit-button {
+    background-color: #16a34a !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    font-size: 0.875rem !important;
+    letter-spacing: 0.05em !important;
+    padding: 1rem 2rem !important;
+    border: none !important;
+    border-radius: 0 !important;
+    cursor: pointer !important;
+    transition: background-color 0.15s ease !important;
+    font-family: var(--font-heading) !important;
+    text-transform: uppercase !important;
+}
+
+.wc-block-components-checkout-place-order-button:hover,
+.wc-block-cart__submit-button:hover {
+    background-color: #15803d !important;
 }
 
 /* === Animations === */
