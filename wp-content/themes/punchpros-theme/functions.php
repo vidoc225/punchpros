@@ -49,9 +49,9 @@ function punchpros_register_widgets() {
         'name'          => __( 'Main Sidebar', 'punchpros-theme' ),
         'id'            => 'sidebar-main',
         'description'   => __( 'Add widgets here to display in the main sidebar.', 'punchpros-theme' ),
-        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-5 bg-brand-light rounded-md">',
+        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-5 bg-gray-light rounded-md">',
         'after_widget'  => '</section>',
-        'before_title'  => '<h2 class="widget-title text-sm font-bold uppercase tracking-wider text-brand-primary mb-3 pb-2 border-b-2 border-brand-accent">',
+        'before_title'  => '<h2 class="widget-title text-sm font-bold uppercase tracking-wider text-dark mb-3 pb-2 border-b-2 border-primary">',
         'after_title'   => '</h2>',
     ] );
 
@@ -101,3 +101,14 @@ function punchpros_wc_wrapper_end() {
 add_filter( 'loop_shop_per_page', function () {
     return 12;
 } );
+
+/**
+ * Add custom classes to nav menu links.
+ */
+add_filter( 'nav_menu_link_attributes', function ( $atts, $item, $args ) {
+    if ( $args->theme_location === 'primary' ) {
+        $atts['class'] = 'text-white text-sm font-bold tracking-wider hover:text-primary transition-colors no-underline';
+        $atts['style']  = 'font-family: var(--font-heading);';
+    }
+    return $atts;
+}, 10, 3 );

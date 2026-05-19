@@ -1,133 +1,208 @@
 <?php get_header(); ?>
 
-<?php // ── Hero Section ── ?>
-<section class="hero relative overflow-hidden bg-gradient-to-br from-brand-primary via-brand-dark to-brand-primary">
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute -right-20 -top-20 h-96 w-96 rounded-full bg-brand-accent blur-3xl"></div>
-        <div class="absolute -left-20 -bottom-20 h-80 w-80 rounded-full bg-brand-accent blur-3xl"></div>
-    </div>
+<?php
+$img = static function ( string $path ) : string {
+    return esc_url( get_theme_file_uri( 'assets/images/' . $path ) );
+};
+$vid = static function ( string $path ) : string {
+    return esc_url( get_theme_file_uri( 'assets/videos/' . $path ) );
+};
+?>
 
-    <div class="container-pp relative z-10 py-24 sm:py-32 lg:py-40 text-center">
-        <h1 class="text-4xl sm:text-5xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight text-balance">
-            <?php esc_html_e( 'Gear Up.', 'punchpros-theme' ); ?>
-            <span class="text-brand-accent"><?php esc_html_e( 'Fight Hard.', 'punchpros-theme' ); ?></span>
+<?php // ── Hero ─ video background ── ?>
+<section class="relative bg-black min-h-screen flex items-center justify-center overflow-hidden -mt-16">
+    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+        <source src="<?php echo $vid( 'boxing-training.mp4' ); ?>" type="video/mp4">
+    </video>
+    <div class="absolute inset-0 bg-black/50"></div>
+
+    <div class="relative z-10 text-center px-4">
+        <h1 class="text-white text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-none">
+            WHERE CHAMPIONS<br>GEAR UP.
         </h1>
-
-        <p class="mt-6 text-lg sm:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
-            <?php esc_html_e( 'Premium boxing and fight gear for every level. From first-timers to champions — we\'ve got you covered.', 'punchpros-theme' ); ?>
-        </p>
-
-        <div class="mt-10 flex flex-wrap justify-center gap-4">
-            <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>" class="btn text-base px-8 py-3.5">
-                <?php esc_html_e( 'Shop Now', 'punchpros-theme' ); ?>
-            </a>
-            <?php
-            $sale_page = get_permalink( wc_get_page_id( 'shop' ) );
-            if ( $sale_page ) : ?>
-                <a href="<?php echo esc_url( add_query_arg( 'on_sale', 'true', $sale_page ) ); ?>" class="btn-outline text-base px-8 py-3.5 text-white border-white hover:bg-white hover:text-brand-primary">
-                    <?php esc_html_e( 'View Deals', 'punchpros-theme' ); ?>
-                </a>
-            <?php endif; ?>
-        </div>
+        <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
+           class="btn mt-8 inline-block">
+            BEKIJK ONS ASSORTIMENT &rarr;
+        </a>
     </div>
 </section>
 
-<?php // ── Featured Products ── ?>
+<?php // ── Best Sellers ── ?>
 <?php if ( class_exists( 'WooCommerce' ) ) : ?>
-<section class="featured-products bg-white py-16 sm:py-20">
+<section class="py-16 sm:py-24 bg-white">
     <div class="container-pp">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-primary"><?php esc_html_e( 'Featured Gear', 'punchpros-theme' ); ?></h2>
-            <p class="mt-3 text-gray-600 max-w-xl mx-auto"><?php esc_html_e( 'Hand-picked equipment trusted by fighters worldwide.', 'punchpros-theme' ); ?></p>
-        </div>
-
-        <?php
-        echo do_shortcode( '[products limit="8" columns="4" visibility="featured" orderby="date"]' );
-        ?>
-
-        <div class="mt-10 text-center">
-            <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>" class="btn-outline">
-                <?php esc_html_e( 'View All Products', 'punchpros-theme' ); ?> &rarr;
-            </a>
-        </div>
+        <h2 class="section-heading">BEST SELLERS</h2>
+        <?php echo do_shortcode( '[products limit="8" columns="4" best_selling="true" orderby="popularity"]' ); ?>
     </div>
 </section>
 <?php endif; ?>
 
-<?php // ── Product Categories ── ?>
-<?php
-$categories = get_terms( [
-    'taxonomy'   => 'product_cat',
-    'hide_empty' => false,
-    'exclude'    => get_option( 'default_product_cat' ),
-    'number'     => 6,
-] );
+<?php // ── Promo Banner ── ?>
+<section class="relative bg-black overflow-hidden min-h-[400px] sm:min-h-[500px] flex items-center">
+    <div class="absolute inset-0">
+        <img src="<?php echo $img( 'promo-banner.png' ); ?>"
+             alt="PunchPros Knokkelbeschermers"
+             class="w-full h-full object-cover object-[70%_center] sm:object-right">
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
 
-if ( ! is_wp_error( $categories ) && ! empty( $categories ) ) : ?>
-<section class="product-categories bg-brand-light py-16 sm:py-20">
-    <div class="container-pp">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-primary"><?php esc_html_e( 'Shop by Category', 'punchpros-theme' ); ?></h2>
+    <div class="relative z-10 container-pp py-16 sm:py-24 w-full">
+        <div class="max-w-xl">
+            <p class="text-primary text-xs sm:text-sm font-bold tracking-[0.2em] mb-4 uppercase" style="font-family: var(--font-body);">
+                De #1 hand protectie voor vechters wereldwijd
+            </p>
+            <h2 class="text-white text-4xl sm:text-5xl md:text-7xl leading-[0.9] mb-8 drop-shadow-lg">
+                VANAF NU<br>BESCHIKBAAR<br>
+                <span class="text-primary">KNOKKEL&shy;BESCHERMERS</span>
+            </h2>
+            <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
+               class="btn inline-flex items-center gap-2 hover:gap-4 hover:shadow-[0_0_30px_rgba(245,166,35,0.3)]">
+                SHOP NU
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </a>
         </div>
+    </div>
+</section>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-<?php echo min( count( $categories ), 6 ); ?> gap-4 sm:gap-6">
-            <?php foreach ( $categories as $cat ) :
-                $thumbnail_id = get_term_meta( $cat->term_id, 'thumbnail_id', true );
-                $image        = $thumbnail_id
-                    ? wp_get_attachment_image_url( $thumbnail_id, 'medium' )
-                    : wc_placeholder_img_src( 'medium' );
-            ?>
-                <a href="<?php echo esc_url( get_term_link( $cat ) ); ?>"
-                   class="group relative flex flex-col items-center justify-end rounded-xl overflow-hidden aspect-square bg-brand-primary no-underline hover:no-underline">
-                    <img src="<?php echo esc_url( $image ); ?>"
-                         alt="<?php echo esc_attr( $cat->name ); ?>"
-                         class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-300">
-                    <div class="relative z-10 p-4 text-center">
-                        <span class="block text-white font-bold text-lg drop-shadow-lg"><?php echo esc_html( $cat->name ); ?></span>
-                        <?php if ( $cat->count > 0 ) : ?>
-                            <span class="block text-white/70 text-sm mt-0.5">
-                                <?php printf( esc_html( _n( '%d product', '%d products', $cat->count, 'punchpros-theme' ) ), $cat->count ); ?>
-                            </span>
-                        <?php endif; ?>
+<?php // ── Champions ── ?>
+<?php
+$champions = [
+    [ 'name' => 'Julio Cesar La Cruz',  'title' => '2x Olympisch kampioen',        'img' => 'champions/julio.jpg' ],
+    [ 'name' => 'Geronimo Hartmans',    'title' => 'Nationaal kampioen -63,5kg',   'img' => 'champions/geronimo.jpg' ],
+    [ 'name' => 'Roniel Iglesias',       'title' => '2x Olympisch kampioen',        'img' => 'champions/roniel.jpg' ],
+    [ 'name' => 'Gabriëlla Weerheim',   'title' => 'Nationaal kampioen -57kg',     'img' => 'champions/gabriella.jpg' ],
+    [ 'name' => 'Farshid Bos',          'title' => 'Nationaal kampioen -67kg',     'img' => 'champions/farshid.jpg' ],
+];
+?>
+<section class="py-16 sm:py-24 bg-white">
+    <div class="container-pp">
+        <h2 class="section-heading">#PUNCHPROSCHAMPIONS</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            <?php foreach ( $champions as $champ ) : ?>
+                <div class="text-center">
+                    <div class="relative aspect-[3/4] bg-gray-100 rounded-[32px] mb-3 overflow-hidden shadow-sm">
+                        <img src="<?php echo $img( $champ['img'] ); ?>"
+                             alt="<?php echo esc_attr( $champ['name'] ); ?>"
+                             class="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                             loading="lazy">
                     </div>
-                </a>
+                    <p class="text-sm text-gray-600" style="text-transform: none; font-family: var(--font-body);">
+                        <?php echo esc_html( $champ['name'] ); ?> &ndash; <?php echo esc_html( $champ['title'] ); ?>
+                    </p>
+                </div>
             <?php endforeach; ?>
         </div>
     </div>
 </section>
-<?php endif; ?>
 
-<?php // ── Trust / USP Bar ── ?>
-<section class="usp-bar bg-brand-primary text-white py-12">
-    <div class="container-pp">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            <div>
-                <div class="text-brand-accent text-3xl mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                </div>
-                <h3 class="text-sm font-bold uppercase tracking-wider text-white"><?php esc_html_e( 'Premium Quality', 'punchpros-theme' ); ?></h3>
-                <p class="text-white/60 text-sm mt-1"><?php esc_html_e( 'Only the best materials and brands.', 'punchpros-theme' ); ?></p>
+<?php // ── Testimonials ── ?>
+<?php
+$testimonials = [
+    [ 'quote' => 'Sinds ik de PunchPros knokkelbeschermers gebruik, heb ik geen last meer van pijn in mijn handen na het boksen. Eindelijk kan ik volledig focussen op mijn techniek.', 'name' => 'ROY', 'role' => 'Professioneel bokser' ],
+    [ 'quote' => 'Op het NK had ik voor het eerst de PunchPros aan. Mijn handen voelden beschermd en ik kon vol vertrouwen slaan. Top product!', 'name' => 'HAYE', 'role' => 'A-klasse bokser' ],
+    [ 'quote' => 'Ik train zes dagen per week en had constant last van mijn knokkels. Dankzij PunchPros kan ik nu weer zonder beperkingen trainen.', 'name' => 'SALEHR', 'role' => 'A-klasse bokser' ],
+    [ 'quote' => 'Na een blessure kon ik nauwelijks meer op de tas slaan. Met de knokkelbeschermers van PunchPros train ik weer pijnvrij.', 'name' => 'DANIËL', 'role' => 'Amateur bokser – Recreant' ],
+    [ 'quote' => 'Na maandenlang pijn in mijn pols te hebben gehad en met een operatie in de planning, kon ik dankzij het gebruik van PunchPros mijn operatie annuleren.', 'name' => 'TIM', 'role' => 'Amateur bokser – Recreant' ],
+];
+?>
+<section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <div class="text-5xl sm:text-6xl leading-none mb-8" style="font-family: var(--font-heading);">&#10077;&#10077;</div>
+        <div class="space-y-12">
+            <?php foreach ( $testimonials as $i => $t ) : ?>
+                <blockquote class="<?php echo $i > 0 ? 'hidden' : ''; ?>" data-testimonial="<?php echo $i; ?>">
+                    <p class="text-xl sm:text-2xl md:text-3xl leading-relaxed mb-8" style="font-family: var(--font-body); text-transform: none;">
+                        <?php echo esc_html( $t['quote'] ); ?>
+                    </p>
+                    <footer>
+                        <cite class="not-italic block text-sm tracking-wider" style="font-family: var(--font-heading);"><?php echo esc_html( $t['name'] ); ?></cite>
+                        <span class="text-gray-500 text-sm mt-1 block" style="text-transform: none; font-family: var(--font-body);"><?php echo esc_html( $t['role'] ); ?></span>
+                    </footer>
+                </blockquote>
+            <?php endforeach; ?>
+        </div>
+        <div class="flex justify-center gap-2 mt-8">
+            <?php for ( $i = 0; $i < count( $testimonials ); $i++ ) : ?>
+                <button class="testimonial-dot w-2.5 h-2.5 rounded-full transition-colors cursor-pointer <?php echo $i === 0 ? 'bg-black' : 'bg-gray-300'; ?>"
+                        data-index="<?php echo $i; ?>" aria-label="Testimonial <?php echo $i + 1; ?>"></button>
+            <?php endfor; ?>
+        </div>
+    </div>
+</section>
+
+<?php // ── Over Het Merk ── ?>
+<section class="py-16 sm:py-20 bg-white" style="font-family: var(--font-body); text-transform: none;">
+    <div class="max-w-5xl mx-auto px-4">
+        <h2 class="section-heading">OVER HET MERK</h2>
+        <p class="text-center text-gray-600 mb-8 max-w-4xl mx-auto">
+            Wat begon als een zoektocht naar betere bescherming voor de knokkels van boksers, groeide uit tot een merk dat sporters in elke fase ondersteunt, van de eerste training tot het hoogste niveau.
+        </p>
+        <div class="space-y-4 max-w-4xl mx-auto text-center text-gray-700">
+            <p>&check; <strong>Ontwikkeld door sporters, voor sporters:</strong> Elk product is ontstaan uit praktijkervaring in de ring.</p>
+            <p>&check; <strong>Altijd getest, nooit zomaar verkocht:</strong> Voordat iets het PunchPros-label krijgt, wordt het uitvoerig gedragen, getest en verbeterd.</p>
+            <p>&check; <strong>Eerlijke prijzen, duurzame kwaliteit:</strong> Goede bescherming moet bereikbaar zijn voor iedereen.</p>
+            <p>&check; <strong>Compleet assortiment voor vechters:</strong> Van knokkelbeschermers en bandages tot fight shorts en shirts.</p>
+        </div>
+    </div>
+</section>
+
+<?php // ── Trust Indicators ── ?>
+<section class="bg-gray-100 py-12 sm:py-16">
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="flex flex-col items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+            <p class="font-bold text-sm" style="font-family: var(--font-body); text-transform: none;">Wereldwijde Verzending</p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <p class="font-bold text-sm" style="font-family: var(--font-body); text-transform: none;">30 dagen bedenktijd</p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+            <p class="font-bold text-sm" style="font-family: var(--font-body); text-transform: none;">Gebruikt door recreanten &eacute;n topsporters</p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+            <p class="font-bold text-sm" style="font-family: var(--font-body); text-transform: none;">9.9/10 Beoordeeld</p>
+        </div>
+    </div>
+</section>
+
+<?php // ── Partners ── ?>
+<section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-3xl mx-auto flex flex-col items-center gap-8 px-4">
+        <div class="flex items-center gap-4 w-full max-w-xs">
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <span class="text-xs font-bold tracking-[0.2em] text-gray-400 uppercase whitespace-nowrap" style="font-family: var(--font-body);">Trotse partner van</span>
+            <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+        <div class="flex flex-col sm:flex-row items-start justify-center gap-12 sm:gap-20">
+            <div class="flex flex-col items-center gap-4 w-[200px]">
+                <a href="https://www.boksen.nl/" target="_blank" rel="noopener noreferrer"
+                   class="relative group w-[180px] h-[180px] flex items-center justify-center no-underline">
+                    <div class="absolute -inset-3 rounded-[32px] border-2 border-primary opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+                    <img src="<?php echo $img( 'boksbond-logo.png' ); ?>"
+                         alt="Nederlandse Boksbond"
+                         class="relative w-40 h-40 object-contain group-hover:scale-105 transition-transform duration-500">
+                </a>
+                <p class="text-center text-gray-500 text-sm" style="font-family: var(--font-body); text-transform: none;">
+                    Officieel partner van de Nederlandse Boksbond.
+                </p>
             </div>
-            <div>
-                <div class="text-brand-accent text-3xl mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                </div>
-                <h3 class="text-sm font-bold uppercase tracking-wider text-white"><?php esc_html_e( 'Fast Shipping', 'punchpros-theme' ); ?></h3>
-                <p class="text-white/60 text-sm mt-1"><?php esc_html_e( 'Quick delivery, right to your door.', 'punchpros-theme' ); ?></p>
-            </div>
-            <div>
-                <div class="text-brand-accent text-3xl mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                </div>
-                <h3 class="text-sm font-bold uppercase tracking-wider text-white"><?php esc_html_e( 'Secure Payment', 'punchpros-theme' ); ?></h3>
-                <p class="text-white/60 text-sm mt-1"><?php esc_html_e( 'Safe checkout with trusted providers.', 'punchpros-theme' ); ?></p>
-            </div>
-            <div>
-                <div class="text-brand-accent text-3xl mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                </div>
-                <h3 class="text-sm font-bold uppercase tracking-wider text-white"><?php esc_html_e( 'Expert Support', 'punchpros-theme' ); ?></h3>
-                <p class="text-white/60 text-sm mt-1"><?php esc_html_e( 'Fighters helping fighters. Always.', 'punchpros-theme' ); ?></p>
+            <div class="flex flex-col items-center gap-4 w-[200px]">
+                <a href="https://masports.nl/" target="_blank" rel="noopener noreferrer"
+                   class="relative group w-[180px] h-[180px] flex items-center justify-center no-underline">
+                    <div class="absolute -inset-3 rounded-[32px] border-2 border-primary opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+                    <div class="relative bg-black rounded-[24px] p-5 w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                        <img src="<?php echo $img( 'logo-1.png' ); ?>"
+                             alt="MA Sports"
+                             class="w-[130px] h-[130px] object-contain">
+                    </div>
+                </a>
+                <p class="text-center text-gray-500 text-sm" style="font-family: var(--font-body); text-transform: none;">
+                    Officieel partner van MA Sports.
+                </p>
             </div>
         </div>
     </div>
@@ -135,32 +210,35 @@ if ( ! is_wp_error( $categories ) && ! empty( $categories ) ) : ?>
 
 <?php // ── New Arrivals ── ?>
 <?php if ( class_exists( 'WooCommerce' ) ) : ?>
-<section class="new-arrivals bg-white py-16 sm:py-20">
+<section class="py-16 sm:py-24 bg-white">
     <div class="container-pp">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-primary"><?php esc_html_e( 'New Arrivals', 'punchpros-theme' ); ?></h2>
-            <p class="mt-3 text-gray-600"><?php esc_html_e( 'The latest gear, fresh in stock.', 'punchpros-theme' ); ?></p>
-        </div>
-
+        <h2 class="section-heading">NIEUW BINNEN</h2>
         <?php echo do_shortcode( '[recent_products limit="4" columns="4" orderby="date"]' ); ?>
     </div>
 </section>
 <?php endif; ?>
 
-<?php // ── CTA Banner ── ?>
-<section class="cta-banner relative overflow-hidden bg-gradient-to-r from-brand-accent to-rose-700 py-16 sm:py-20">
-    <div class="container-pp relative z-10 text-center">
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white text-balance">
-            <?php esc_html_e( 'Ready to Step in the Ring?', 'punchpros-theme' ); ?>
-        </h2>
-        <p class="mt-4 text-lg text-white/80 max-w-xl mx-auto">
-            <?php esc_html_e( 'Browse our full collection and find the gear that fits your fight.', 'punchpros-theme' ); ?>
-        </p>
-        <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
-           class="btn mt-8 bg-white text-brand-primary hover:bg-gray-100 text-base px-8 py-3.5">
-            <?php esc_html_e( 'Shop the Collection', 'punchpros-theme' ); ?>
-        </a>
-    </div>
-</section>
+<?php // ── Testimonial Carousel Script ── ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var quotes = document.querySelectorAll('[data-testimonial]');
+    var dots   = document.querySelectorAll('.testimonial-dot');
+    if (!quotes.length) return;
+    var current = 0;
+    function show(idx) {
+        quotes.forEach(function (q) { q.classList.add('hidden'); });
+        dots.forEach(function (d) { d.classList.remove('bg-black'); d.classList.add('bg-gray-300'); });
+        quotes[idx].classList.remove('hidden');
+        quotes[idx].classList.add('animate-fade-in');
+        dots[idx].classList.remove('bg-gray-300');
+        dots[idx].classList.add('bg-black');
+        current = idx;
+    }
+    dots.forEach(function (d) {
+        d.addEventListener('click', function () { show(parseInt(this.dataset.index)); });
+    });
+    setInterval(function () { show((current + 1) % quotes.length); }, 5000);
+});
+</script>
 
 <?php get_footer(); ?>
