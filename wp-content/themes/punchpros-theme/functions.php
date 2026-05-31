@@ -169,11 +169,163 @@ add_action( 'wp_head', 'punchpros_seo_meta', 1 );
  */
 function punchpros_canonical() {
     if ( is_singular() || is_front_page() || is_shop() || is_product_category() ) {
-        $url = is_front_page() ? home_url( '/' ) : ( is_shop() ? get_permalink( wc_get_page_id( 'shop' ) ) : get_canonical_url() );
+        $url = is_front_page() ? home_url( '/' ) : ( is_shop() ? get_permalink( wc_get_page_id( 'shop' ) ) : wp_get_canonical_url() );
         echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
     }
 }
 add_action( 'wp_head', 'punchpros_canonical', 2 );
+
+/**
+ * Sitemap: zorg dat de WP core sitemap actief is en voeg product-categorieën toe.
+ */
+add_filter( 'wp_sitemaps_post_types', function ( $post_types ) {
+    // Zorg dat producten in de sitemap zitten
+    if ( post_type_exists( 'product' ) && ! isset( $post_types['product'] ) ) {
+        $post_types['product'] = get_post_type_object( 'product' );
+    }
+    return $post_types;
+} );
+
+add_filter( 'wp_sitemaps_taxonomies', function ( $taxonomies ) {
+    // Voeg product categorieën toe aan de sitemap
+    if ( taxonomy_exists( 'product_cat' ) && ! isset( $taxonomies['product_cat'] ) ) {
+        $taxonomies['product_cat'] = get_taxonomy( 'product_cat' );
+    }
+    return $taxonomies;
+} );
+
+/**
+ * Schema.org JSON-LD gestructureerde data.
+ */
+function punchpros_schema_jsonld() {
+    $site_name = get_bloginfo( 'name' );
+    $site_url  = home_url( '/' );
+    $logo_url  = get_theme_file_uri( 'assets/images/logo-white.png' );
+    $schemas   = [];
+
+    // WebSite schema op elke pagina (voor sitelinks-zoekfunctie in Google)
+    $schemas[] = [
+        '@context' => 'https://schema.org',
+        '@type'    => 'WebSite',
+        'name'     => $site_name,
+        'url'      => $site_url,
+        'potentialAction' => [
+            '@type'       => 'SearchAction',
+            'target'      => [
+                '@type'       => 'EntryPoint',
+                'urlTemplate' => home_url( '/?s={search_term_string}&post_type=product' ),
+            ],
+            'query-input' => 'required name=search_term_string',
+        ],
+    ];
+
+    // Organization schema op de homepage
+    if ( is_front_page() ) {
+        $schemas[] = [
+            '@context' => 'https://schema.org',
+            '@type'    => 'Organization',
+            'name'     => $site_name,
+            'url'      => $site_url,
+            'logo'     => [
+                '@type' => 'ImageObject',
+                'url'   => $logo_url,
+            ],
+            'contactPoint' => [
+                '@type'       => 'ContactPoint',
+                'telephone'   => '+31640260209',
+                'contactType' => 'customer service',
+                'areaServed'  => 'NL',
+                'availableLanguage' => 'Dutch',
+            ],
+            'address' => [
+                '@type'           => 'PostalAddress',
+                'streetAddress'   => 'Salverdastraat 8',
+                'addressLocality' => 'Sneek',
+                'postalCode'      => '8602 AV',
+                'addressCountry'  => 'NL',
+            ],
+            'sameAs' => [
+                'https://www.instagram.com/punchpros/',
+                'https://www.facebook.com/punchpros/',
+            ],
+        ];
+    }
+
+    // Product schema op productpagina's
+    if ( is_product() ) {
+        global $post;
+        $product = wc_get_product( $post->ID );
+        if ( $product ) {
+            $price       = $product->get_price();
+            $reg_price   = $product->get_regular_price();
+            $image_url   = get_the_post_thumbnail_url( $post->ID, 'large' ) ?: $logo_url;
+            $in_stock    = $product->is_in_stock() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
+            $description = wp_strip_all_tags( $product->get_short_description() ?: $product->get_description() );
+
+            $schema = [
+                '@context'    => 'https://schema.org',
+                '@type'       => 'Product',
+                'name'        => get_the_title(),
+                'description' => wp_trim_words( $description, 50, '...' ),
+                'image'       => $image_url,
+                'url'         => get_permalink(),
+                'sku'         => $product->get_sku() ?: (string) $product->get_id(),
+                'brand'       => [
+                    '@type' => 'Brand',
+                    'name'  => $site_name,
+                ],
+                'offers' => [
+                    '@type'           => 'Offer',
+                    'url'             => get_permalink(),
+                    'priceCurrency'   => get_woocommerce_currency(),
+                    'price'           => $price,
+                    'availability'    => $in_stock,
+                    'itemCondition'   => 'https://schema.org/NewCondition',
+                    'seller'          => [
+                        '@type' => 'Organization',
+                        'name'  => $site_name,
+                    ],
+                ],
+            ];
+
+            // Voeg aanbiedingsprijs toe als er een sale is
+            if ( $product->is_on_sale() && $reg_price ) {
+                $schema['offers']['priceValidUntil'] = date( 'Y-12-31' );
+            }
+
+            $schemas[] = $schema;
+        }
+    }
+
+    // BreadcrumbList op categorie- en productpagina's
+    if ( is_product_category() ) {
+        $term      = get_queried_object();
+        $ancestors = array_reverse( get_ancestors( $term->term_id, 'product_cat', 'taxonomy' ) );
+        $items     = [
+            [ '@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => $site_url ],
+            [ '@type' => 'ListItem', 'position' => 2, 'name' => 'Shop', 'item' => get_permalink( wc_get_page_id( 'shop' ) ) ],
+        ];
+        $pos = 3;
+        foreach ( $ancestors as $ancestor_id ) {
+            $ancestor = get_term( $ancestor_id, 'product_cat' );
+            if ( ! is_wp_error( $ancestor ) ) {
+                $items[] = [ '@type' => 'ListItem', 'position' => $pos++, 'name' => $ancestor->name, 'item' => get_term_link( $ancestor ) ];
+            }
+        }
+        $items[] = [ '@type' => 'ListItem', 'position' => $pos, 'name' => $term->name, 'item' => get_term_link( $term ) ];
+
+        $schemas[] = [
+            '@context'        => 'https://schema.org',
+            '@type'           => 'BreadcrumbList',
+            'itemListElement' => $items,
+        ];
+    }
+
+    if ( empty( $schemas ) ) return;
+
+    echo '<script type="application/ld+json">' . wp_json_encode( $schemas, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+}
+add_action( 'wp_head', 'punchpros_schema_jsonld', 5 );
 
 /**
  * Add custom classes to nav menu links.
