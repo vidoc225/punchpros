@@ -136,30 +136,28 @@ function punchpros_shop_categories() {
     ?>
     <div class="mb-10">
         <h2 class="section-heading">SHOP PER CATEGORIE</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 sm:gap-5">
             <?php foreach ( $cats as $cat ) :
                 $thumb_id  = get_term_meta( $cat->term_id, 'thumbnail_id', true );
-                $thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'medium_large' ) : '';
+                $thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'woocommerce_thumbnail' ) : '';
             ?>
                 <a href="<?php echo esc_url( get_term_link( $cat ) ); ?>"
-                   class="group relative overflow-hidden rounded-lg aspect-[4/3] flex items-end no-underline bg-black"
+                   class="group block no-underline text-center"
                    aria-label="<?php echo esc_attr( $cat->name ); ?>">
-                    <?php if ( $thumb_url ) : ?>
-                        <img src="<?php echo esc_url( $thumb_url ); ?>"
-                             alt="<?php echo esc_attr( $cat->name ); ?> — PunchPros"
-                             class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-50 group-hover:scale-105 transition-all duration-500"
-                             loading="lazy">
-                    <?php else : ?>
-                        <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-black group-hover:opacity-80 transition-opacity duration-500"></div>
-                    <?php endif; ?>
-                    <div class="relative z-10 w-full p-4 sm:p-5 bg-gradient-to-t from-black/80 to-transparent">
-                        <h3 class="text-white text-lg sm:text-xl leading-tight" style="font-family: var(--font-heading);">
-                            <?php echo esc_html( strtoupper( $cat->name ) ); ?>
-                        </h3>
-                        <p class="text-primary text-xs font-bold tracking-wider mt-1" style="font-family: var(--font-body); text-transform: none;">
-                            <?php printf( _n( '%s product', '%s producten', $cat->count, 'punchpros-theme' ), $cat->count ); ?> &rarr;
-                        </p>
+                    <div class="bg-white border border-gray-100 rounded-2xl p-5 aspect-square flex items-center justify-center overflow-hidden mb-3 group-hover:shadow-lg transition-shadow duration-300">
+                        <?php if ( $thumb_url ) : ?>
+                            <img src="<?php echo esc_url( $thumb_url ); ?>"
+                                 alt="<?php echo esc_attr( $cat->name ); ?>"
+                                 class="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                                 loading="lazy">
+                        <?php endif; ?>
                     </div>
+                    <h3 class="text-sm font-bold text-black leading-tight mb-1" style="font-family: var(--font-heading); text-transform: uppercase;">
+                        <?php echo esc_html( $cat->name ); ?>
+                    </h3>
+                    <p class="text-primary text-xs font-bold" style="font-family: var(--font-body); text-transform: none;">
+                        <?php printf( _n( '%s product', '%s producten', $cat->count, 'punchpros-theme' ), $cat->count ); ?> &rarr;
+                    </p>
                 </a>
             <?php endforeach; ?>
         </div>

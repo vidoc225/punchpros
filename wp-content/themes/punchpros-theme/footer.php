@@ -75,6 +75,43 @@
 
 </div><!-- #page -->
 
+<?php // ── Slide-in Mini Cart ── ?>
+<?php if ( class_exists( 'WooCommerce' ) ) : ?>
+<div id="pp-cart-overlay" class="fixed inset-0 bg-black/60 z-[998] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+<aside id="pp-mini-cart" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-[999] shadow-2xl translate-x-full transition-transform duration-300 flex flex-col" style="font-family: var(--font-body); text-transform: none;">
+    <!-- Header -->
+    <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+        <h2 class="text-lg text-black m-0" style="font-family: var(--font-heading); text-transform: uppercase;">WINKELWAGEN</h2>
+        <button id="pp-cart-close" class="text-gray-400 hover:text-black transition-colors cursor-pointer bg-transparent border-0 p-1" aria-label="Sluiten">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Cart items (scrollable) -->
+    <div id="pp-cart-items" class="flex-1 overflow-y-auto px-6 py-4">
+        <p class="text-gray-400 text-center py-10">Je winkelwagen is leeg.</p>
+    </div>
+
+    <!-- Footer with totals + buttons -->
+    <div id="pp-cart-footer" class="border-t border-gray-200 px-6 py-5 hidden">
+        <div class="flex justify-between items-center mb-4">
+            <span class="text-sm text-gray-500" style="font-family: var(--font-body);">Subtotaal</span>
+            <span id="pp-cart-total" class="text-base font-semibold text-black" style="font-family: var(--font-body);"></span>
+        </div>
+        <div class="space-y-3">
+            <a href="<?php echo esc_url( wc_get_checkout_url() ); ?>" class="block w-full text-center py-3 text-sm font-bold tracking-wider text-white no-underline hover:no-underline transition-colors" style="background-color: #16a34a; font-family: var(--font-heading); text-transform: uppercase;" onmouseover="this.style.backgroundColor='#15803d'" onmouseout="this.style.backgroundColor='#16a34a'">
+                BESTELLEN &rarr;
+            </a>
+            <button id="pp-cart-continue" class="block w-full text-center py-3 text-sm font-bold tracking-wider bg-gray-100 text-black border-0 cursor-pointer hover:bg-gray-200 transition-colors" style="font-family: var(--font-heading); text-transform: uppercase;">
+                VERDER WINKELEN
+            </button>
+        </div>
+    </div>
+</aside>
+<?php endif; ?>
+
 <?php wp_footer(); ?>
 </body>
 </html>

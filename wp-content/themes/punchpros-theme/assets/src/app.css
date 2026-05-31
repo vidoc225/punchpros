@@ -384,6 +384,11 @@
     background-color: #15803d !important;
 }
 
+/* === Hide WooCommerce "View cart" link on shop archive === */
+.woocommerce ul.products li.product a.added_to_cart {
+    display: none !important;
+}
+
 /* === Animations === */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
