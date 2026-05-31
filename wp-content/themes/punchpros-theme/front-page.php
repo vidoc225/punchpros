@@ -37,6 +37,52 @@ $vid = static function ( string $path ) : string {
 </section>
 <?php endif; ?>
 
+<?php // ── Categorieën ── ?>
+<?php
+$cats = get_terms( [
+    'taxonomy'   => 'product_cat',
+    'parent'     => 0,
+    'hide_empty' => true,
+    'exclude'    => get_option( 'default_product_cat' ),
+    'orderby'    => 'count',
+    'order'      => 'DESC',
+    'number'     => 6,
+] );
+if ( ! is_wp_error( $cats ) && ! empty( $cats ) ) : ?>
+<section class="py-16 sm:py-20 bg-gray-100">
+    <div class="container-pp">
+        <h2 class="section-heading">SHOP PER CATEGORIE</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+            <?php foreach ( $cats as $cat ) :
+                $thumb_id  = get_term_meta( $cat->term_id, 'thumbnail_id', true );
+                $thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'medium_large' ) : '';
+            ?>
+                <a href="<?php echo esc_url( get_term_link( $cat ) ); ?>"
+                   class="group relative overflow-hidden rounded-lg aspect-[4/3] flex items-end no-underline bg-black"
+                   aria-label="<?php echo esc_attr( $cat->name ); ?>">
+                    <?php if ( $thumb_url ) : ?>
+                        <img src="<?php echo esc_url( $thumb_url ); ?>"
+                             alt="<?php echo esc_attr( $cat->name ); ?> — PunchPros"
+                             class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-50 group-hover:scale-105 transition-all duration-500"
+                             loading="lazy">
+                    <?php else : ?>
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-black group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <?php endif; ?>
+                    <div class="relative z-10 w-full p-4 sm:p-5 bg-gradient-to-t from-black/80 to-transparent">
+                        <h3 class="text-white text-lg sm:text-xl leading-tight" style="font-family: var(--font-heading);">
+                            <?php echo esc_html( strtoupper( $cat->name ) ); ?>
+                        </h3>
+                        <p class="text-primary text-xs font-bold tracking-wider mt-1" style="font-family: var(--font-body); text-transform: none;">
+                            <?php printf( _n( '%s product', '%s producten', $cat->count, 'punchpros-theme' ), $cat->count ); ?> &rarr;
+                        </p>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <?php // ── Promo Banner ── ?>
 <section class="relative bg-black overflow-hidden min-h-[400px] sm:min-h-[500px] flex items-center">
     <div class="absolute inset-0">
