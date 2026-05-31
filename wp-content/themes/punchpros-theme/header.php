@@ -4,6 +4,12 @@
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="profile" href="https://gmpg.org/xfn/11">
+    <?php if ( is_front_page() ) : ?>
+    <link rel="preload" as="image" href="<?php echo esc_url( get_theme_file_uri( 'assets/images/hero-bg.webp' ) ); ?>">
+    <?php elseif ( is_page( 'over-ons' ) ) : ?>
+    <link rel="preload" as="image" href="<?php echo esc_url( get_theme_file_uri( 'assets/images/over-ons-foto.webp' ) ); ?>">
+    <?php endif; ?>
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <?php wp_head(); ?>
 </head>
 

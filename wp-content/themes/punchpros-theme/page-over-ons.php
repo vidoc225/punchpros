@@ -9,8 +9,10 @@ $img = static function ( string $path ) : string {
 <?php // ── Hero ── ?>
 <section class="relative h-screen min-h-[600px] flex items-end -mt-16">
     <img
-        src="<?php echo $img( 'over-ons-foto.jpg' ); ?>"
-        alt="De oprichters van PunchPros"
+        src="<?php echo $img( 'over-ons-foto.webp' ); ?>"
+        alt="De oprichters van PunchPros — PunchPros vechtsportmerk"
+        width="1600" height="900"
+        fetchpriority="high"
         class="absolute inset-0 w-full h-full object-cover object-top"
     >
     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10"></div>

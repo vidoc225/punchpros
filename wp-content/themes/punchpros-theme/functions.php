@@ -36,13 +36,32 @@ function punchpros_setup() {
 add_action( 'after_setup_theme', 'punchpros_setup' );
 
 function punchpros_enqueue_assets() {
-    $css_path = get_theme_file_path( 'assets/css/app.css' );
-    $css_uri  = get_theme_file_uri( 'assets/css/app.css' );
-    $version  = file_exists( $css_path ) ? filemtime( $css_path ) : wp_get_theme()->get( 'Version' );
+    $css_path     = get_theme_file_path( 'assets/css/app.css' );
+    $css_min_path = get_theme_file_path( 'assets/css/app.min.css' );
+    $version      = file_exists( $css_path ) ? filemtime( $css_path ) : wp_get_theme()->get( 'Version' );
+
+    if ( file_exists( $css_min_path ) && filemtime( $css_min_path ) >= filemtime( $css_path ) ) {
+        $css_uri = get_theme_file_uri( 'assets/css/app.min.css' );
+    } else {
+        $css_uri = get_theme_file_uri( 'assets/css/app.css' );
+    }
 
     wp_enqueue_style( 'punchpros-app', $css_uri, [], $version );
 }
 add_action( 'wp_enqueue_scripts', 'punchpros_enqueue_assets' );
+
+function punchpros_minify_css() {
+    $src  = get_theme_file_path( 'assets/css/app.css' );
+    $dest = get_theme_file_path( 'assets/css/app.min.css' );
+    if ( ! file_exists( $src ) ) return;
+    $css = file_get_contents( $src );
+    $css = preg_replace( '#/\*(?!!).*?\*/#s', '', $css );
+    $css = preg_replace( '/\s+/', ' ', $css );
+    $css = preg_replace( '/\s*([:;{},>~+])\s*/', '$1', $css );
+    $css = preg_replace( '/;}/', '}', $css );
+    file_put_contents( $dest, trim( $css ) );
+}
+add_action( 'after_switch_theme', 'punchpros_minify_css' );
 
 function punchpros_register_widgets() {
     register_sidebar( [
@@ -326,6 +345,63 @@ function punchpros_schema_jsonld() {
     echo '<script type="application/ld+json">' . wp_json_encode( $schemas, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
 }
 add_action( 'wp_head', 'punchpros_schema_jsonld', 5 );
+
+/**
+ * Mini-cart sidebar: AJAX endpoint to get cart contents.
+ */
+function punchpros_mini_cart_fragments() {
+    $items = [];
+    if ( WC()->cart ) {
+        foreach ( WC()->cart->get_cart() as $key => $item ) {
+            $product   = $item['data'];
+            $thumbnail = wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) ?: wc_placeholder_img_src( 'thumbnail' );
+            $items[]   = [
+                'key'       => $key,
+                'name'      => $product->get_name(),
+                'qty'       => $item['quantity'],
+                'price'     => html_entity_decode( strip_tags( WC()->cart->get_product_subtotal( $product, $item['quantity'] ) ) ),
+                'thumbnail' => $thumbnail,
+                'permalink' => get_permalink( $item['product_id'] ),
+            ];
+        }
+    }
+    wp_send_json_success( [
+        'items' => $items,
+        'total' => html_entity_decode( strip_tags( WC()->cart->get_cart_subtotal() ) ),
+        'count' => WC()->cart->get_cart_contents_count(),
+    ] );
+}
+add_action( 'wp_ajax_pp_get_mini_cart', 'punchpros_mini_cart_fragments' );
+add_action( 'wp_ajax_nopriv_pp_get_mini_cart', 'punchpros_mini_cart_fragments' );
+
+/**
+ * Mini-cart sidebar: AJAX remove item.
+ */
+function punchpros_mini_cart_remove() {
+    $key = isset( $_POST['cart_key'] ) ? sanitize_text_field( $_POST['cart_key'] ) : '';
+    if ( $key ) {
+        WC()->cart->remove_cart_item( $key );
+    }
+    punchpros_mini_cart_fragments();
+}
+add_action( 'wp_ajax_pp_remove_cart_item', 'punchpros_mini_cart_remove' );
+add_action( 'wp_ajax_nopriv_pp_remove_cart_item', 'punchpros_mini_cart_remove' );
+
+/**
+ * Mini-cart sidebar: enqueue JS + pass ajax url.
+ */
+function punchpros_mini_cart_scripts() {
+    if ( ! class_exists( 'WooCommerce' ) ) return;
+
+    $js_path = get_theme_file_path( 'assets/js/mini-cart.js' );
+    $version = file_exists( $js_path ) ? filemtime( $js_path ) : '1.0';
+    wp_enqueue_script( 'pp-mini-cart', get_theme_file_uri( 'assets/js/mini-cart.js' ), [ 'jquery' ], $version, true );
+    wp_localize_script( 'pp-mini-cart', 'ppCart', [
+        'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+        'nonce'   => wp_create_nonce( 'pp_cart_nonce' ),
+    ] );
+}
+add_action( 'wp_enqueue_scripts', 'punchpros_mini_cart_scripts' );
 
 /**
  * Add custom classes to nav menu links.

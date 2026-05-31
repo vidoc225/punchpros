@@ -11,7 +11,9 @@ $vid = static function ( string $path ) : string {
 
 <?php // ── Hero ─ video background ── ?>
 <section class="relative bg-black min-h-screen flex items-center justify-center overflow-hidden -mt-16">
-    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+    <video autoplay muted loop playsinline preload="none"
+           poster="<?php echo $img( 'hero-bg.webp' ); ?>"
+           class="absolute inset-0 w-full h-full object-cover">
         <source src="<?php echo $vid( 'boxing-training.mp4' ); ?>" type="video/mp4">
     </video>
     <div class="absolute inset-0 bg-black/50"></div>
@@ -86,8 +88,10 @@ if ( ! is_wp_error( $cats ) && ! empty( $cats ) ) : ?>
 <?php // ── Promo Banner ── ?>
 <section class="relative bg-black overflow-hidden min-h-[400px] sm:min-h-[500px] flex items-center">
     <div class="absolute inset-0">
-        <img src="<?php echo $img( 'promo-banner.png' ); ?>"
+        <img src="<?php echo $img( 'promo-banner.webp' ); ?>"
              alt="PunchPros Knokkelbeschermers"
+             width="1400" height="700"
+             loading="lazy"
              class="w-full h-full object-cover object-[70%_center] sm:object-right">
     </div>
     <div class="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
@@ -114,11 +118,11 @@ if ( ! is_wp_error( $cats ) && ! empty( $cats ) ) : ?>
 <?php // ── Champions ── ?>
 <?php
 $champions = [
-    [ 'name' => 'Julio Cesar La Cruz',  'title' => '2x Olympisch kampioen',        'img' => 'champions/julio.jpg' ],
-    [ 'name' => 'Geronimo Hartmans',    'title' => 'Nationaal kampioen -63,5kg',   'img' => 'champions/geronimo.jpg' ],
-    [ 'name' => 'Roniel Iglesias',       'title' => '2x Olympisch kampioen',        'img' => 'champions/roniel.jpg' ],
-    [ 'name' => 'Gabriëlla Weerheim',   'title' => 'Nationaal kampioen -57kg',     'img' => 'champions/gabriella.jpg' ],
-    [ 'name' => 'Farshid Bos',          'title' => 'Nationaal kampioen -67kg',     'img' => 'champions/farshid.jpg' ],
+    [ 'name' => 'Julio Cesar La Cruz',  'title' => '2x Olympisch kampioen',        'img' => 'champions/julio.webp' ],
+    [ 'name' => 'Geronimo Hartmans',    'title' => 'Nationaal kampioen -63,5kg',   'img' => 'champions/geronimo.webp' ],
+    [ 'name' => 'Roniel Iglesias',       'title' => '2x Olympisch kampioen',        'img' => 'champions/roniel.webp' ],
+    [ 'name' => 'Gabriëlla Weerheim',   'title' => 'Nationaal kampioen -57kg',     'img' => 'champions/gabriella.webp' ],
+    [ 'name' => 'Farshid Bos',          'title' => 'Nationaal kampioen -67kg',     'img' => 'champions/farshid.webp' ],
 ];
 ?>
 <section class="py-16 sm:py-24 bg-white">
