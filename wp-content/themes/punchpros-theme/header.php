@@ -20,7 +20,7 @@
                 <?php else : ?>
                     <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="flex items-center no-underline hover:no-underline" rel="home">
                         <img src="<?php echo esc_url( get_theme_file_uri( 'assets/images/logo-white.png' ) ); ?>"
-                             alt="<?php bloginfo( 'name' ); ?>"
+                             alt="<?php bloginfo( 'name' ); ?> — Bokshandschoenen & MMA Gear"
                              class="h-6 w-auto">
                     </a>
                 <?php endif; ?>

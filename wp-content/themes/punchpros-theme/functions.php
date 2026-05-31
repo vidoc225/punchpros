@@ -97,6 +97,85 @@ add_filter( 'loop_shop_per_page', function () {
 } );
 
 /**
+ * SEO: meta description + Open Graph tags per pagina-type.
+ */
+function punchpros_seo_meta() {
+    $site_name = get_bloginfo( 'name' );
+    $logo_url  = get_theme_file_uri( 'assets/images/logo-white.png' );
+
+    if ( is_front_page() ) {
+        $title       = $site_name . ' — Bokshandschoenen & MMA Gear Online Kopen';
+        $description = 'PunchPros is jouw online vechtsportwinkel voor bokshandschoenen, MMA-uitrusting en beschermingsmateriaal. Gratis verzending boven €50. Bestel nu!';
+        $image       = $logo_url;
+        $url         = home_url( '/' );
+
+    } elseif ( is_shop() ) {
+        $title       = 'Alle Producten — ' . $site_name;
+        $description = 'Ontdek ons volledige assortiment vechtsportartikelen: bokshandschoenen, MMA shorts, springtouwen, bokszakken en meer. Bestel snel en veilig.';
+        $image       = $logo_url;
+        $url         = get_permalink( wc_get_page_id( 'shop' ) );
+
+    } elseif ( is_product_category() ) {
+        $term        = get_queried_object();
+        $cat_desc    = strip_tags( $term->description );
+        $title       = $term->name . ' kopen — ' . $site_name;
+        $description = $cat_desc ?: 'Bekijk ons assortiment ' . strtolower( $term->name ) . ' van topmerken. Snelle levering, scherpe prijzen.';
+        $thumb       = get_term_meta( $term->term_id, 'thumbnail_id', true );
+        $image       = $thumb ? wp_get_attachment_url( $thumb ) : $logo_url;
+        $url         = get_term_link( $term );
+
+    } elseif ( is_product() ) {
+        global $post;
+        $product     = wc_get_product( $post->ID );
+        $title       = get_the_title() . ' — ' . $site_name;
+        $description = $product ? wp_strip_all_tags( $product->get_short_description() ?: $product->get_description() ) : '';
+        $description = $description ?: 'Koop ' . get_the_title() . ' bij PunchPros. Topkwaliteit vechtsportartikelen met snelle bezorging.';
+        $description = wp_trim_words( $description, 25, '...' );
+        $image       = get_the_post_thumbnail_url( $post->ID, 'large' ) ?: $logo_url;
+        $url         = get_permalink();
+
+    } elseif ( is_page() ) {
+        $title       = get_the_title() . ' — ' . $site_name;
+        $description = wp_trim_words( get_the_excerpt() ?: get_bloginfo( 'description' ), 25, '...' );
+        $image       = get_the_post_thumbnail_url( get_the_ID(), 'large' ) ?: $logo_url;
+        $url         = get_permalink();
+
+    } else {
+        return;
+    }
+
+    $description = esc_attr( wp_strip_all_tags( $description ) );
+    $title       = esc_attr( $title );
+    $image       = esc_url( $image );
+    $url         = esc_url( $url );
+    ?>
+    <meta name="description" content="<?php echo $description; ?>">
+    <meta property="og:type" content="<?php echo is_product() ? 'product' : 'website'; ?>">
+    <meta property="og:title" content="<?php echo $title; ?>">
+    <meta property="og:description" content="<?php echo $description; ?>">
+    <meta property="og:image" content="<?php echo $image; ?>">
+    <meta property="og:url" content="<?php echo $url; ?>">
+    <meta property="og:site_name" content="<?php echo esc_attr( $site_name ); ?>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo $title; ?>">
+    <meta name="twitter:description" content="<?php echo $description; ?>">
+    <meta name="twitter:image" content="<?php echo $image; ?>">
+    <?php
+}
+add_action( 'wp_head', 'punchpros_seo_meta', 1 );
+
+/**
+ * SEO: canonical URL om duplicate content te voorkomen.
+ */
+function punchpros_canonical() {
+    if ( is_singular() || is_front_page() || is_shop() || is_product_category() ) {
+        $url = is_front_page() ? home_url( '/' ) : ( is_shop() ? get_permalink( wc_get_page_id( 'shop' ) ) : get_canonical_url() );
+        echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
+    }
+}
+add_action( 'wp_head', 'punchpros_canonical', 2 );
+
+/**
  * Add custom classes to nav menu links.
  */
 add_filter( 'nav_menu_link_attributes', function ( $atts, $item, $args ) {
