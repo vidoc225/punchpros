@@ -116,6 +116,58 @@ add_filter( 'loop_shop_per_page', function () {
 } );
 
 /**
+ * Shop page: show category grid before products.
+ */
+add_action( 'woocommerce_before_shop_loop', 'punchpros_shop_categories', 5 );
+function punchpros_shop_categories() {
+    if ( ! is_shop() ) return;
+
+    $cats = get_terms( [
+        'taxonomy'   => 'product_cat',
+        'parent'     => 0,
+        'hide_empty' => true,
+        'exclude'    => get_option( 'default_product_cat' ),
+        'orderby'    => 'count',
+        'order'      => 'DESC',
+        'number'     => 6,
+    ] );
+
+    if ( is_wp_error( $cats ) || empty( $cats ) ) return;
+    ?>
+    <div class="mb-10">
+        <h2 class="section-heading">SHOP PER CATEGORIE</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+            <?php foreach ( $cats as $cat ) :
+                $thumb_id  = get_term_meta( $cat->term_id, 'thumbnail_id', true );
+                $thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'medium_large' ) : '';
+            ?>
+                <a href="<?php echo esc_url( get_term_link( $cat ) ); ?>"
+                   class="group relative overflow-hidden rounded-lg aspect-[4/3] flex items-end no-underline bg-black"
+                   aria-label="<?php echo esc_attr( $cat->name ); ?>">
+                    <?php if ( $thumb_url ) : ?>
+                        <img src="<?php echo esc_url( $thumb_url ); ?>"
+                             alt="<?php echo esc_attr( $cat->name ); ?> — PunchPros"
+                             class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-50 group-hover:scale-105 transition-all duration-500"
+                             loading="lazy">
+                    <?php else : ?>
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-black group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <?php endif; ?>
+                    <div class="relative z-10 w-full p-4 sm:p-5 bg-gradient-to-t from-black/80 to-transparent">
+                        <h3 class="text-white text-lg sm:text-xl leading-tight" style="font-family: var(--font-heading);">
+                            <?php echo esc_html( strtoupper( $cat->name ) ); ?>
+                        </h3>
+                        <p class="text-primary text-xs font-bold tracking-wider mt-1" style="font-family: var(--font-body); text-transform: none;">
+                            <?php printf( _n( '%s product', '%s producten', $cat->count, 'punchpros-theme' ), $cat->count ); ?> &rarr;
+                        </p>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php
+}
+
+/**
  * SEO: meta description + Open Graph tags per pagina-type.
  */
 function punchpros_seo_meta() {
@@ -193,6 +245,58 @@ function punchpros_canonical() {
     }
 }
 add_action( 'wp_head', 'punchpros_canonical', 2 );
+
+/**
+ * Image sitemap: aparte XML sitemap voor alle productafbeeldingen.
+ * Bereikbaar via /image-sitemap.xml
+ */
+add_action( 'init', function () {
+    add_rewrite_rule( '^image-sitemap\.xml$', 'index.php?punchpros_image_sitemap=1', 'top' );
+} );
+add_filter( 'query_vars', function ( $vars ) {
+    $vars[] = 'punchpros_image_sitemap';
+    return $vars;
+} );
+add_action( 'template_redirect', function () {
+    if ( ! get_query_var( 'punchpros_image_sitemap' ) ) return;
+
+    $products = get_posts( [
+        'post_type'      => 'product',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+    ] );
+
+    header( 'Content-Type: application/xml; charset=UTF-8' );
+    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
+
+    foreach ( $products as $id ) {
+        $product   = wc_get_product( $id );
+        if ( ! $product ) continue;
+        $img_ids   = array_merge( [ get_post_thumbnail_id( $id ) ], $product->get_gallery_image_ids() );
+        $img_ids   = array_filter( $img_ids );
+        if ( empty( $img_ids ) ) continue;
+
+        echo '  <url>' . "\n";
+        echo '    <loc>' . esc_url( get_permalink( $id ) ) . '</loc>' . "\n";
+        foreach ( $img_ids as $img_id ) {
+            $src   = wp_get_attachment_url( $img_id );
+            $title = get_post_field( 'post_title', $img_id );
+            $alt   = get_post_meta( $img_id, '_wp_attachment_image_alt', true ) ?: get_the_title( $id );
+            if ( ! $src ) continue;
+            echo '    <image:image>' . "\n";
+            echo '      <image:loc>' . esc_url( $src ) . '</image:loc>' . "\n";
+            echo '      <image:title>' . esc_html( $title ?: get_the_title( $id ) ) . '</image:title>' . "\n";
+            echo '      <image:caption>' . esc_html( $alt ) . '</image:caption>' . "\n";
+            echo '    </image:image>' . "\n";
+        }
+        echo '  </url>' . "\n";
+    }
+
+    echo '</urlset>';
+    exit;
+} );
 
 /**
  * Sitemap: zorg dat de WP core sitemap actief is en voeg product-categorieën toe.
@@ -277,16 +381,23 @@ function punchpros_schema_jsonld() {
         if ( $product ) {
             $price       = $product->get_price();
             $reg_price   = $product->get_regular_price();
-            $image_url   = get_the_post_thumbnail_url( $post->ID, 'large' ) ?: $logo_url;
             $in_stock    = $product->is_in_stock() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
             $description = wp_strip_all_tags( $product->get_short_description() ?: $product->get_description() );
+
+            // Alle productafbeeldingen verzamelen
+            $image_ids  = $product->get_gallery_image_ids();
+            array_unshift( $image_ids, get_post_thumbnail_id( $post->ID ) );
+            $images = array_values( array_filter( array_map( function( $id ) {
+                return $id ? wp_get_attachment_url( $id ) : null;
+            }, $image_ids ) ) );
+            $image_url = $images[0] ?? $logo_url;
 
             $schema = [
                 '@context'    => 'https://schema.org',
                 '@type'       => 'Product',
                 'name'        => get_the_title(),
                 'description' => wp_trim_words( $description, 50, '...' ),
-                'image'       => $image_url,
+                'image'       => count( $images ) > 1 ? $images : $image_url,
                 'url'         => get_permalink(),
                 'sku'         => $product->get_sku() ?: (string) $product->get_id(),
                 'brand'       => [
@@ -300,16 +411,85 @@ function punchpros_schema_jsonld() {
                     'price'           => $price,
                     'availability'    => $in_stock,
                     'itemCondition'   => 'https://schema.org/NewCondition',
-                    'seller'          => [
+                    'priceValidUntil' => date( 'Y-12-31' ),
+                    'hasMerchantReturnPolicy' => [
+                        '@type'                    => 'MerchantReturnPolicy',
+                        'applicableCountry'        => 'NL',
+                        'returnPolicyCategory'     => 'https://schema.org/MerchantReturnFiniteReturnWindow',
+                        'merchantReturnDays'       => 30,
+                        'returnMethod'             => 'https://schema.org/ReturnByMail',
+                        'returnFees'               => 'https://schema.org/FreeReturn',
+                    ],
+                    'shippingDetails' => [
+                        '@type'           => 'OfferShippingDetails',
+                        'shippingRate'    => [
+                            '@type'    => 'MonetaryAmount',
+                            'value'    => '0',
+                            'currency' => 'EUR',
+                        ],
+                        'shippingDestination' => [
+                            '@type'          => 'DefinedRegion',
+                            'addressCountry' => 'NL',
+                        ],
+                        'deliveryTime' => [
+                            '@type'           => 'ShippingDeliveryTime',
+                            'handlingTime'    => [
+                                '@type'    => 'QuantitativeValue',
+                                'minValue' => 0,
+                                'maxValue' => 1,
+                                'unitCode' => 'DAY',
+                            ],
+                            'transitTime' => [
+                                '@type'    => 'QuantitativeValue',
+                                'minValue' => 1,
+                                'maxValue' => 3,
+                                'unitCode' => 'DAY',
+                            ],
+                        ],
+                    ],
+                    'seller' => [
                         '@type' => 'Organization',
                         'name'  => $site_name,
                     ],
                 ],
             ];
 
-            // Voeg aanbiedingsprijs toe als er een sale is
-            if ( $product->is_on_sale() && $reg_price ) {
-                $schema['offers']['priceValidUntil'] = date( 'Y-12-31' );
+            // Aggregate rating als er WooCommerce reviews zijn
+            $rating_count = $product->get_rating_count();
+            $avg_rating   = $product->get_average_rating();
+            if ( $rating_count > 0 && $avg_rating > 0 ) {
+                $schema['aggregateRating'] = [
+                    '@type'       => 'AggregateRating',
+                    'ratingValue' => $avg_rating,
+                    'reviewCount' => $rating_count,
+                    'bestRating'  => 5,
+                    'worstRating' => 1,
+                ];
+            }
+
+            // Individuele reviews (max 5 meest recente)
+            $reviews = get_comments( [
+                'post_id' => $post->ID,
+                'status'  => 'approve',
+                'number'  => 5,
+                'meta_key' => 'rating',
+            ] );
+            if ( ! empty( $reviews ) ) {
+                $schema['review'] = array_map( function( $r ) {
+                    $rating = get_comment_meta( $r->comment_ID, 'rating', true );
+                    return [
+                        '@type'         => 'Review',
+                        'author'        => [ '@type' => 'Person', 'name' => $r->comment_author ],
+                        'datePublished' => date( 'Y-m-d', strtotime( $r->comment_date ) ),
+                        'reviewBody'    => wp_strip_all_tags( $r->comment_content ),
+                        'reviewRating'  => [
+                            '@type'       => 'Rating',
+                            'ratingValue' => (int) $rating,
+                            'bestRating'  => 5,
+                            'worstRating' => 1,
+                        ],
+                    ];
+                }, $reviews );
             }
 
             $schemas[] = $schema;
