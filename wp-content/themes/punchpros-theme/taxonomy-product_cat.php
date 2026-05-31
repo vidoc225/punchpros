@@ -120,7 +120,7 @@ if ( ! is_wp_error( $subcats ) && ! empty( $subcats ) ) : ?>
         <?php echo wp_kses_post( $cat_desc ); ?>
         <p class="mt-4">
             <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>" class="text-primary font-semibold hover:underline">
-                &larr; Bekijk alle vechtsportartikelen
+                &larr; Bekijk alle bokshandschoenen, MMA gear en beschermingsmateriaal
             </a>
         </p>
     </div>

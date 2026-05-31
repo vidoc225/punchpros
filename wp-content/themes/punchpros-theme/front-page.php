@@ -22,7 +22,7 @@ $vid = static function ( string $path ) : string {
         </h1>
         <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
            class="btn mt-8 inline-block">
-            BEKIJK ONS ASSORTIMENT &rarr;
+            BEKIJK BOKSHANDSCHOENEN & MMA GEAR &rarr;
         </a>
     </div>
 </section>
@@ -104,7 +104,7 @@ if ( ! is_wp_error( $cats ) && ! empty( $cats ) ) : ?>
             </h2>
             <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
                class="btn inline-flex items-center gap-2 hover:gap-4 hover:shadow-[0_0_30px_rgba(245,166,35,0.3)]">
-                SHOP NU
+                BEKIJK ONZE KNOKKELBESCHERMERS
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
             </a>
         </div>
@@ -188,7 +188,14 @@ $testimonials = [
             <p>&check; <strong>Ontwikkeld door sporters, voor sporters:</strong> Elk product is ontstaan uit praktijkervaring in de ring.</p>
             <p>&check; <strong>Altijd getest, nooit zomaar verkocht:</strong> Voordat iets het PunchPros-label krijgt, wordt het uitvoerig gedragen, getest en verbeterd.</p>
             <p>&check; <strong>Eerlijke prijzen, duurzame kwaliteit:</strong> Goede bescherming moet bereikbaar zijn voor iedereen.</p>
-            <p>&check; <strong>Compleet assortiment voor vechters:</strong> Van knokkelbeschermers en bandages tot fight shorts en shirts.</p>
+            <p>&check; <strong>Compleet assortiment voor vechters:</strong> Van <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>" class="text-primary hover:underline">knokkelbeschermers en bandages tot fight shorts en shirts</a>.</p>
+        </div>
+        <div class="text-center mt-10">
+            <a href="<?php echo esc_url( get_page_link( get_page_by_path( 'over-ons' ) ) ); ?>"
+               class="text-sm font-bold tracking-wider underline hover:text-primary transition-colors"
+               style="font-family: var(--font-heading);">
+                LEES ONS VOLLEDIGE VERHAAL &rarr;
+            </a>
         </div>
     </div>
 </section>

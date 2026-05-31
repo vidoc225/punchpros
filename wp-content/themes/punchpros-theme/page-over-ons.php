@@ -84,6 +84,12 @@ $img = static function ( string $path ) : string {
             <?php endforeach; ?>
         </div>
         <p class="text-center text-gray-400 text-sm mt-12">Ontworpen en geproduceerd in Nederland met onze eigen 3D-geprinte mallen.</p>
+        <div class="text-center mt-10">
+            <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
+               class="btn inline-block">
+                BEKIJK ONZE KNOKKELBESCHERMERS & GEAR &rarr;
+            </a>
+        </div>
     </div>
 </section>
 
