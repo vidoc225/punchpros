@@ -116,6 +116,16 @@ add_filter( 'loop_shop_per_page', function () {
 } );
 
 /**
+ * Main shop page: hide products, result count, sorting — only show categories.
+ */
+add_action( 'wp', function () {
+    if ( is_shop() && ! is_search() ) {
+        remove_action( 'woocommerce_before_shop_loop', 'woocommerce_result_count', 20 );
+        remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
+    }
+} );
+
+/**
  * Shop page: show category grid before products.
  */
 add_action( 'woocommerce_before_shop_loop', 'punchpros_shop_categories', 5 );

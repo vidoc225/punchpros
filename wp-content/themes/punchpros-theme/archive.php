@@ -32,7 +32,6 @@
                             <svg class="h-12 w-12 text-primary opacity-90 group-hover:scale-110 transition-transform duration-500" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M20 9c0-1.1-.9-2-2-2h-1V5.5C17 4.12 15.88 3 14.5 3h-5C8.12 3 7 4.12 7 5.5V7H6c-1.1 0-2 .9-2 2v4c0 2.21 1.79 4 4 4v2c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-2c2.21 0 4-1.79 4-4V9zm-11-3.5c0-.28.22-.5.5-.5h5c.28 0 .5.22.5.5V7H9V5.5z"/>
                             </svg>
-                            <span class="absolute bottom-3 right-4 text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase" style="font-family: var(--font-heading);">PUNCHPROS</span>
                         </a>
                     <?php endif; ?>
 
