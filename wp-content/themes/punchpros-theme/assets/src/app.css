@@ -82,7 +82,7 @@
 
     .entry-content h2 { @apply text-2xl mt-8 mb-3; }
     .entry-content h3 { @apply text-xl mt-6 mb-2; }
-    .entry-content p  { @apply mb-6 leading-relaxed; }
+    .entry-content p  { @apply mb-[4.5rem] leading-relaxed; }
     .entry-content ul, .entry-content ol { @apply mb-4 pl-6; }
     .entry-content ul { @apply list-disc; }
     .entry-content ol { @apply list-decimal; }
