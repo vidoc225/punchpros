@@ -24,7 +24,7 @@ $vid = static function ( string $path ) : string {
         </h1>
         <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>"
            class="btn mt-8 inline-block">
-            BEKIJK BOKSHANDSCHOENEN & MMA GEAR &rarr;
+            BEKIJK BOKSHANDSCHOENEN & GEAR &rarr;
         </a>
     </div>
 </section>
@@ -81,7 +81,7 @@ $champions = [
 ?>
 <section class="py-16 sm:py-24 bg-white">
     <div class="container-pp">
-        <h2 class="section-heading">#PUNCHPROSCHAMPIONS</h2>
+        <h2 class="section-heading text-primary">#PUNCHPROSCHAMPIONS</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             <?php foreach ( $champions as $champ ) : ?>
                 <div class="text-center">
@@ -146,7 +146,7 @@ $testimonials = [
             <p>&check; <strong>Ontwikkeld door sporters, voor sporters:</strong> Elk product is ontstaan uit praktijkervaring in de ring.</p>
             <p>&check; <strong>Altijd getest, nooit zomaar verkocht:</strong> Voordat iets het PunchPros-label krijgt, wordt het uitvoerig gedragen, getest en verbeterd.</p>
             <p>&check; <strong>Eerlijke prijzen, duurzame kwaliteit:</strong> Goede bescherming moet bereikbaar zijn voor iedereen.</p>
-            <p>&check; <strong>Compleet assortiment voor vechters:</strong> Van <a href="<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>" class="text-primary hover:underline">knokkelbeschermers en bandages tot fight shorts en shirts</a>.</p>
+            <p>&check; <strong>Volledige bescherming, één merk:</strong> Van knokkel tot kaak, wij beschermen wat jij op het spel zet.</p>
         </div>
         <div class="text-center mt-10">
             <a href="<?php echo esc_url( get_page_link( get_page_by_path( 'over-ons' ) ) ); ?>"

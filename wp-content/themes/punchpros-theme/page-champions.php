@@ -46,7 +46,7 @@ $ambassadors = [
 
 <?php // ── Hero ── ?>
 <section class="bg-black text-white pt-20 sm:pt-28 pb-24 sm:pb-32 text-center px-4 -mt-16">
-    <h1 class="text-4xl sm:text-5xl md:text-6xl text-white" style="font-family:var(--font-heading)">#PUNCHPROSCHAMPIONS</h1>
+    <h1 class="text-4xl sm:text-5xl md:text-6xl text-primary" style="font-family:var(--font-heading)">#PUNCHPROSCHAMPIONS</h1>
     <p class="text-gray-400 mt-4 max-w-2xl mx-auto text-lg">Topsporters en amateurs die vertrouwen op PunchPros. Van nationaal kampioen tot olympisch goud.</p>
 </section>
 
