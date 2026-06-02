@@ -326,6 +326,90 @@ add_filter( 'wp_sitemaps_taxonomies', function ( $taxonomies ) {
 } );
 
 /**
+ * robots.txt: verwijs naar sitemaps en blokkeer onnodige/dunne URL's.
+ */
+add_filter( 'robots_txt', function ( $output, $public ) {
+    if ( ! $public ) return $output; // site op 'discourage search engines' → laat WP standaard
+
+    $sitemap   = home_url( '/wp-sitemap.xml' );
+    $img_map   = home_url( '/image-sitemap.xml' );
+
+    $lines   = [];
+    $lines[] = 'User-agent: *';
+    // Blokkeer WooCommerce checkout/cart/account — geen SEO-waarde, voorkomt crawl-verspilling
+    $lines[] = 'Disallow: /cart/';
+    $lines[] = 'Disallow: /checkout/';
+    $lines[] = 'Disallow: /my-account/';
+    $lines[] = 'Disallow: /*add-to-cart=*';
+    // Blokkeer interne zoekresultaten en filters (thin/duplicate content)
+    $lines[] = 'Disallow: /*?s=';
+    $lines[] = 'Disallow: /*?orderby=';
+    $lines[] = 'Disallow: /*?filter_';
+    // Sta wel toe dat assets gecrawld worden (nodig voor rendering)
+    $lines[] = 'Allow: /wp-content/uploads/';
+    $lines[] = 'Allow: /wp-content/themes/';
+    $lines[] = '';
+    $lines[] = 'Sitemap: ' . $sitemap;
+    $lines[] = 'Sitemap: ' . $img_map;
+
+    return implode( "\n", $lines ) . "\n";
+}, 10, 2 );
+
+/**
+ * FAQ: zichtbare veelgestelde vragen onderaan productpagina's.
+ * Wordt gekoppeld aan FAQPage schema (zie punchpros_schema_jsonld).
+ */
+function punchpros_product_faqs() {
+    // Algemene FAQ's die voor alle PunchPros-producten gelden
+    return [
+        [
+            'q' => 'Wat zijn de verzendkosten en levertijd?',
+            'a' => 'Verzending binnen Nederland is gratis. Je bestelling wordt doorgaans binnen 1 tot 3 werkdagen geleverd.',
+        ],
+        [
+            'q' => 'Kan ik mijn bestelling retourneren?',
+            'a' => 'Ja. Je hebt 30 dagen bedenktijd en retourneren is gratis. Stuur het product ongebruikt terug en je ontvangt je geld retour.',
+        ],
+        [
+            'q' => 'Zijn de producten geschikt voor zowel beginners als gevorderden?',
+            'a' => 'Absoluut. PunchPros-producten worden gebruikt door recreatieve sporters én olympische kampioenen. Ze zijn ontworpen voor elk niveau.',
+        ],
+        [
+            'q' => 'Voor welke vechtsporten zijn de producten geschikt?',
+            'a' => 'Onze producten zijn geschikt voor boksen, kickboksen, MMA en Muay Thai.',
+        ],
+    ];
+}
+
+add_action( 'woocommerce_after_single_product_summary', 'punchpros_render_product_faqs', 15 );
+function punchpros_render_product_faqs() {
+    $faqs = punchpros_product_faqs();
+    if ( empty( $faqs ) ) return;
+    ?>
+    <section class="punchpros-faq mt-12 max-w-3xl" style="font-family: var(--font-body); text-transform: none;">
+        <h2 class="text-2xl font-bold mb-6" style="font-family: var(--font-heading); text-transform: uppercase;">
+            Veelgestelde vragen
+        </h2>
+        <div class="divide-y divide-gray-200 border-t border-gray-200">
+            <?php foreach ( $faqs as $i => $faq ) : ?>
+                <details class="group py-4" <?php echo $i === 0 ? 'open' : ''; ?>>
+                    <summary class="flex items-center justify-between cursor-pointer list-none font-bold text-base text-black hover:text-primary transition-colors">
+                        <?php echo esc_html( $faq['q'] ); ?>
+                        <svg class="h-5 w-5 flex-shrink-0 ml-4 transition-transform group-open:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </summary>
+                    <p class="mt-3 text-gray-600 leading-relaxed">
+                        <?php echo esc_html( $faq['a'] ); ?>
+                    </p>
+                </details>
+            <?php endforeach; ?>
+        </div>
+    </section>
+    <?php
+}
+
+/**
  * Schema.org JSON-LD gestructureerde data.
  */
 function punchpros_schema_jsonld() {
@@ -501,6 +585,27 @@ function punchpros_schema_jsonld() {
             }
 
             $schemas[] = $schema;
+        }
+
+        // FAQPage schema — matcht de zichtbare FAQ onderaan productpagina's
+        if ( function_exists( 'punchpros_product_faqs' ) ) {
+            $faqs = punchpros_product_faqs();
+            if ( ! empty( $faqs ) ) {
+                $schemas[] = [
+                    '@context'   => 'https://schema.org',
+                    '@type'      => 'FAQPage',
+                    'mainEntity' => array_map( function ( $faq ) {
+                        return [
+                            '@type'          => 'Question',
+                            'name'           => $faq['q'],
+                            'acceptedAnswer' => [
+                                '@type' => 'Answer',
+                                'text'  => $faq['a'],
+                            ],
+                        ];
+                    }, $faqs ),
+                ];
+            }
         }
     }
 
