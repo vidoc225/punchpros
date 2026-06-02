@@ -389,6 +389,43 @@
     display: none !important;
 }
 
+/* === Mobile Menu === */
+#pp-mobile-menu #mobile-menu li a {
+    display: block;
+    padding: 1rem 1.5rem;
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: color 0.15s ease;
+}
+
+#pp-mobile-menu #mobile-menu li a:hover {
+    color: #f5a623;
+}
+
+#pp-mobile-menu.open {
+    transform: translateY(0) !important;
+}
+
+/* === Responsive WhatsApp button === */
+@media (max-width: 640px) {
+    .fixed.bottom-6.left-6 {
+        bottom: 1rem !important;
+        left: 1rem !important;
+        width: 3rem !important;
+        height: 3rem !important;
+    }
+    .fixed.bottom-6.left-6 svg {
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+    }
+}
+
 /* === Animations === */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
