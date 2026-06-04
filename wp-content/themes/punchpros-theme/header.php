@@ -45,6 +45,13 @@
             </nav>
 
             <div class="flex items-center gap-4 text-white">
+                <!-- Search toggle -->
+                <button id="pp-search-toggle" class="text-white hover:text-primary bg-transparent border-0 cursor-pointer p-1 transition-colors" aria-label="Zoeken">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+
                 <?php if ( class_exists( 'WooCommerce' ) ) : ?>
                     <a href="<?php echo esc_url( wc_get_cart_url() ); ?>"
                        class="relative inline-flex items-center text-white hover:text-primary no-underline transition-colors"
@@ -67,6 +74,31 @@
             </div>
         </div>
     </header>
+
+    <!-- Search Panel -->
+    <div id="pp-search-panel" class="fixed top-16 left-0 w-full bg-black z-40 -translate-y-full opacity-0 transition-all duration-300 pointer-events-none" style="font-family: var(--font-body);">
+        <div class="container-pp py-4">
+            <form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>" class="flex items-center gap-3">
+                <input type="hidden" name="post_type" value="product">
+                <div class="flex-1 relative">
+                    <input type="search" name="s"
+                           id="pp-search-input"
+                           placeholder="Zoek producten..."
+                           autocomplete="off"
+                           class="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 px-4 py-3 text-sm focus:outline-none focus:border-primary transition-colors"
+                           style="font-family: var(--font-body); text-transform: none;">
+                </div>
+                <button type="submit" class="bg-primary text-black font-bold px-6 py-3 text-sm tracking-wider hover:bg-primary-dark transition-colors cursor-pointer border-0" style="font-family: var(--font-heading); text-transform: uppercase;">
+                    ZOEKEN
+                </button>
+                <button type="button" id="pp-search-close" class="text-gray-400 hover:text-white bg-transparent border-0 cursor-pointer p-2 transition-colors" aria-label="Zoeken sluiten">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- Mobile Menu Overlay -->
     <div id="pp-mobile-overlay" class="fixed inset-0 bg-black/60 z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>

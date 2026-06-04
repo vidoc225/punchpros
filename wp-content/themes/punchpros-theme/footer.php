@@ -75,6 +75,15 @@
 
 </div><!-- #page -->
 
+<?php // ── Back to Top Button ── ?>
+<button id="pp-back-to-top"
+        class="fixed bottom-6 right-6 z-[997] w-12 h-12 bg-black/70 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-primary hover:scale-110 transition-all duration-300 cursor-pointer border-0 opacity-0 pointer-events-none"
+        aria-label="Terug naar boven">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+    </svg>
+</button>
+
 <?php // ── WhatsApp Button ── ?>
 <a href="https://wa.me/31850604453" target="_blank" rel="noopener noreferrer"
    class="fixed bottom-6 left-6 z-[997] w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 no-underline"
@@ -153,6 +162,62 @@
     // Close on link click
     menu.querySelectorAll('a').forEach(function (link) {
         link.addEventListener('click', closeMenu);
+    });
+})();
+
+// Back to top button
+(function () {
+    var btn = document.getElementById('pp-back-to-top');
+    if (!btn) return;
+
+    window.addEventListener('scroll', function () {
+        if (window.scrollY > 600) {
+            btn.classList.remove('opacity-0', 'pointer-events-none');
+            btn.classList.add('opacity-100');
+        } else {
+            btn.classList.remove('opacity-100');
+            btn.classList.add('opacity-0', 'pointer-events-none');
+        }
+    });
+
+    btn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+})();
+
+// Search panel toggle
+(function () {
+    var searchToggle = document.getElementById('pp-search-toggle');
+    var searchPanel  = document.getElementById('pp-search-panel');
+    var searchClose  = document.getElementById('pp-search-close');
+    var searchInput  = document.getElementById('pp-search-input');
+    if (!searchToggle || !searchPanel) return;
+
+    var isOpen = false;
+
+    function openSearch() {
+        searchPanel.classList.remove('-translate-y-full', 'opacity-0', 'pointer-events-none');
+        searchPanel.classList.add('translate-y-0', 'opacity-100');
+        isOpen = true;
+        setTimeout(function () { searchInput.focus(); }, 100);
+    }
+
+    function closeSearch() {
+        searchPanel.classList.remove('translate-y-0', 'opacity-100');
+        searchPanel.classList.add('-translate-y-full', 'opacity-0', 'pointer-events-none');
+        isOpen = false;
+    }
+
+    searchToggle.addEventListener('click', function () {
+        isOpen ? closeSearch() : openSearch();
+    });
+
+    if (searchClose) {
+        searchClose.addEventListener('click', closeSearch);
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && isOpen) closeSearch();
     });
 })();
 </script>

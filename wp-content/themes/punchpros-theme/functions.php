@@ -130,7 +130,7 @@ add_action( 'wp', function () {
  */
 add_action( 'woocommerce_before_shop_loop', 'punchpros_shop_categories', 5 );
 function punchpros_shop_categories() {
-    if ( ! is_shop() ) return;
+    if ( ! is_shop() || is_search() ) return;
 
     $cats = get_terms( [
         'taxonomy'   => 'product_cat',
@@ -706,3 +706,51 @@ add_filter( 'nav_menu_link_attributes', function ( $atts, $item, $args ) {
     }
     return $atts;
 }, 10, 3 );
+
+/**
+ * Sticky Add to Cart bar on mobile for single product pages.
+ */
+add_action( 'wp_footer', function () {
+    if ( ! is_product() || ! class_exists( 'WooCommerce' ) ) return;
+    global $product;
+    if ( ! $product ) return;
+
+    $price = $product->get_price_html();
+    $name  = $product->get_name();
+    ?>
+    <div id="pp-sticky-atc" class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-[996] translate-y-full transition-transform duration-300 md:hidden" style="font-family: var(--font-body); text-transform: none;">
+        <div class="flex items-center justify-between px-4 py-3 gap-3">
+            <div class="flex-1 min-w-0">
+                <p class="text-xs font-bold text-black truncate mb-0"><?php echo esc_html( $name ); ?></p>
+                <p class="text-sm font-semibold text-gray-700 mb-0"><?php echo $price; ?></p>
+            </div>
+            <a href="#pp-product-form" class="flex-shrink-0 inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold tracking-wider text-white no-underline hover:no-underline transition-colors"
+               style="background-color: #16a34a; font-family: var(--font-heading); text-transform: uppercase;"
+               onclick="document.querySelector('form.cart')?.scrollIntoView({behavior:'smooth',block:'center'}); return false;">
+                ADD TO CART
+            </a>
+        </div>
+    </div>
+    <script>
+    (function () {
+        var stickyBar = document.getElementById('pp-sticky-atc');
+        var form = document.querySelector('form.cart');
+        if (!stickyBar || !form) return;
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    stickyBar.classList.add('translate-y-full');
+                    stickyBar.classList.remove('translate-y-0');
+                } else {
+                    stickyBar.classList.remove('translate-y-full');
+                    stickyBar.classList.add('translate-y-0');
+                }
+            });
+        }, { threshold: 0 });
+
+        observer.observe(form);
+    })();
+    </script>
+    <?php
+} );
