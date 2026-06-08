@@ -364,7 +364,7 @@ function punchpros_product_faqs() {
     return [
         [
             'q' => 'Wat zijn de verzendkosten en levertijd?',
-            'a' => 'Verzending binnen Nederland is gratis. Je bestelling wordt doorgaans binnen 1 tot 3 werkdagen geleverd.',
+            'a' => 'Verzendkosten zijn €5,95 voor Nederland en België, €6,95 voor Duitsland. Voor 17:00 besteld is de volgende dag in huis. Levering in Duitsland binnen 5 werkdagen.',
         ],
         [
             'q' => 'Kan ik mijn bestelling retourneren?',
